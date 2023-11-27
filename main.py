@@ -3,22 +3,24 @@ import nltk
 import streamlit as st
 from streamlit_antd_components import menu, MenuItem
 import streamlit_antd_components as sac
-from main_bot import basebot_memory, basebot_qa_memory, clear_session_states, search_bot, basebot, basebot_qa, complete_my_lesson
-from files_module import display_files,docs_uploader, delete_files
-from kb_module import display_vectorstores, create_vectorstore, delete_vectorstores
-from authenticate import login_function,check_password
-from class_dash import download_data_table_csv
-from machine import upload_csv, plot_prices, prepare_data_and_train, plot_predictions, load_teachable_machines
-from agent import agent_bot, agent_management, wiki_search, YouTubeSearchTool, DuckDuckGoSearchRun
-from chatbot import call_api, api_call, rule_based
-from prototype_application import my_first_app, prototype_settings, my_first_app_advance
-from analytics_dashboard import pandas_ai
-from assistant import assistant_demo, init_session_state
+from basecode.main_bot import basebot_memory, basebot_qa_memory, clear_session_states, search_bot, basebot, basebot_qa, complete_my_lesson
+from basecode.files_module import display_files,docs_uploader, delete_files
+from basecode.kb_module import display_vectorstores, create_vectorstore, delete_vectorstores
+from basecode.authenticate import login_function,check_password
+from basecode.class_dash import download_data_table_csv
+from nocode_workshop.machine import upload_csv, plot_prices, prepare_data_and_train, plot_predictions, load_teachable_machines
+from nocode_workshop.agent import agent_bot, agent_management, wiki_search, YouTubeSearchTool, DuckDuckGoSearchRun
+from nocode_workshop.rule_base_api_chatbot import call_api, api_call, rule_based
+from nocode_workshop.prototype_application import my_first_app, prototype_settings, my_first_app_advance
+from nocode_workshop.analytics_dashboard import pandas_ai
+from nocode_workshop.assistant import assistant_demo, init_session_state
+from nocode_workshop.k_map import map_creation_form
 #New schema move function fom settings
-from database_schema import create_dbs
-import exercises as ex
+from basecode.database_schema import create_dbs
+from coding_workshop import exercises as ex
+from coding_workshop import project_templates as tpl
 
-from database_module import (
+from basecode.database_module import (
 	manage_tables, 
 	delete_tables, 
 	download_database, 
@@ -29,7 +31,7 @@ from database_module import (
 	backup_s3_database,
 	db_was_modified
 	)
-from org_module import (
+from basecode.org_module import (
 	has_at_least_two_rows,
 	initialise_admin_account,
 	load_user_profile,
@@ -46,8 +48,8 @@ from org_module import (
 	add_level,
 )
 
-from pwd_module import reset_passwords, password_settings
-from users_module import (
+from basecode.pwd_module import reset_passwords, password_settings
+from basecode.users_module import (
 	link_users_to_app_function_ui,
 	set_function_access_for_user,
 	create_prompt_template,
@@ -58,8 +60,8 @@ from users_module import (
 	link_profiles_to_vectorstore_interface
 )
 
-from bot_settings import bot_settings_interface, load_bot_settings
-from openai_features import generate_image, record_myself, upload_audio, analyse_image, text_to_speech
+from basecode.bot_settings import bot_settings_interface, load_bot_settings
+from nocode_workshop.openai_features import generate_image, record_myself, upload_audio, analyse_image, text_to_speech
 from PIL import Image
 import configparser
 import ast
@@ -256,7 +258,7 @@ def main():
 		with st.sidebar: #options for sidebar
 			
 			if st.session_state.login == False:
-				st.image("AI logo.png")
+				st.image("app_logo/AI logo.png")
 				st.session_state.option = menu([MenuItem('Users login', icon='people')])
 			else:
 				#can do a test if user is school is something show a different logo and set a different API key
@@ -384,6 +386,7 @@ def main():
 				download_data_table_csv(st.session_state.user["id"], st.session_state.user["school_id"], st.session_state.user["profile_id"])
 			display_vectorstores()
 			vectorstore_selection_interface(st.session_state.user['id'])
+	
 
 		elif st.session_state.option == 'Machine Learning':
 			
@@ -429,43 +432,43 @@ def main():
 			# Code for python exercises
 			st.subheader(f":green[{st.session_state.option}]")
 			st.divider()
-			st.write("Hello world function")
+			st.write(":blue[Exercise 0  - Hello world function]")
 			ex.hello_world()
 			st.divider()
-			st.write("Input Exercise")
+			st.write(":blue[Exercise 1  - Input]")
 			ex.input_exercise()
 			st.divider()
-			st.write("Button Exercise")
+			st.write(":blue[Exercise 2  - Button]")
 			ex.button_exercise()
 			st.divider()
-			st.write("Using if else")
+			st.write(":blue[Exercise 3 - Using if else]")
 			ex.using_if_else()
 			st.divider()
-			st.write("Challenge 1 - Create a button and input application")
+			st.write(":blue[Challenge 1 - Create a button and input application]")
 			ex.button_input_exercise()
 			st.divider()
-			st.write("Using Session State")
+			st.write(":blue[Exercise 4 - Using Session State]")
 			ex.using_session_state()
 			st.divider()
-			st.write("rule based question and answer")
+			st.write(":blue[Exercise 5 - rule based question and answer]")
 			ex.rule_based_question_answering()
 			st.divider()
-			st.write("Challenge 2 - rule based question and answer with session state")
+			st.write(":blue[Challenge 2 - rule based question and answer with session state]")
 			ex.rule_based_question_answering_challenge()
 			st.divider()
-			st.write("Data Structure in python")
+			st.write(":blue[Exercise 6 - Data Structure in python]")
 			ex.simple_data_structure()
 			st.divider()
-			st.write("Displaying data structure")
+			st.write(":blue[Exercise 7 - Displaying data structure]")
 			ex.display_dictionary_in_dataframe()
 			st.divider()
-			st.write("For loop exercise")
+			st.write(":blue[Exercise 8 - For loop]")
 			ex.loop_exercise()
 			st.divider()
-			st.write("Streamlit form and widgets exercise")
+			st.write(":blue[Exercise 9 - Streamlit form and widgets]")
 			ex.streamlit_form_exercise()
 			st.divider()
-			st.write("Challenge 3 - Form input into dictionary and show all the inputs")
+			st.write(":blue[Challenge 3 - Form input into dictionary and show all the inputs]")
 			ex.append_form_data_to_list()
 			st.divider()
 
@@ -545,14 +548,45 @@ def main():
 
 		elif st.session_state.option == 'OpenAI Assistant Chatbot':
 			#call the agent chatbot function here
-			init_session_state()
-			assistant_demo()
+			#ASSISTANT_ID = "asst_SN0BhLgX1qI3ztb3JOJ6t52P"
+			#MAPBOX_TOKEN = "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"
+			if "ASSISTANT_ID" in st.secrets or "MAPBOX_TOKEN" in st.secrets:
+				init_session_state()
+				assistant_demo()
+			else:
+				st.warning("Please enter your Assistant ID and Mapbox Token to enable this feature")
 			pass
 
 
 		elif st.session_state.option == 'GenAi prototype Application(Exercise)':
 			#call the prototype application function here
-			ex.prototype_application()
+			options = sac.buttons(
+							items=[
+								sac.ButtonsItem(label='Prototype Application', icon='app',),
+								sac.ButtonsItem(label='Template 1 - Form', icon='app'),
+								sac.ButtonsItem(label='Template 2 - Chatbot', icon='chat'),
+								sac.ButtonsItem(label='Template 3 - Assistant', icon='chat-left'),
+							], index=0, format_func='title', align='center')
+			if options == 'Prototype Application':
+				ex.prototype_application()
+			elif options == 'Template 1 - Form':
+				tpl.template1_form_with_genai_call()
+			elif options == 'Template 2 - Chatbot':
+				tpl.template2_ragbot()
+			elif options == 'Template 3 - Assistant':
+				if "OPENAI_ASSISTANT" in st.secrets:
+					tpl.template3_openai_assistant()
+				else:
+					st.warning("Please enter or create your OpenAI Assistant API key to enable this feature")
+			# ex.prototype_application()
+			# st.divider()
+			# tpl.template1_form_with_genai_call()
+			# st.divider()
+			# tpl.template2_ragbot()
+			# st.divider()
+			# tpl.template3_agent()
+			# st.divider()
+			# tpl.template4_openai_assistant()
 		
 		#========================ZERO CODE workshop code below do not modify========================#
 

@@ -1,6 +1,6 @@
 import streamlit as st
 from openai import OpenAI
-from authenticate import return_api_key
+from basecode.authenticate import return_api_key
 import sqlite3
 import os
 import pandas as pd
@@ -8,10 +8,10 @@ from langchain.memory import ConversationBufferWindowMemory
 from datetime import datetime
 import streamlit as st
 import openai
-from authenticate import return_api_key
+from basecode.authenticate import return_api_key
 from langchain.tools import YouTubeSearchTool
-from kb_module import display_vectorstores
-from users_module import vectorstore_selection_interface
+from basecode.kb_module import display_vectorstores
+from basecode.users_module import vectorstore_selection_interface
 from langchain.agents import ConversationalChatAgent, AgentExecutor
 from langchain.callbacks import StreamlitCallbackHandler
 from langchain.chat_models import ChatOpenAI
@@ -40,27 +40,24 @@ client = OpenAI(
     # defaults to os.environ.get("OPENAI_API_KEY")
     api_key=return_api_key(),
 )
-
-#Only modify the code below for the exercises and challenges
-
-#python exercises
+#exercise 0 - hello world python 
 def hello_world():
 	st.write("Hello World")
 	st.write("My name is ... ")
 
-#exrcise 1
+#exercise 1 - input 
 def input_exercise():
 	name = st.text_input("Enter your name:", key = 1)
 	st.write("Hello " + name)
 
-#exercise 2
+#exercise 2 - button
 def button_exercise():
 	if st.button("Say Hello"):
 		st.write("Hello")
 	else:
 		st.write("Goodbye")
 
-#exercise 3
+#exercise 3 - if else
 def using_if_else():
 	if st.button("Print Hello"):
 		st.write("Hello")
@@ -72,14 +69,12 @@ def using_if_else():
 #challenge 1 is to modify the code below to create a button that says "Say Goodbye"
 def button_input_exercise():
 	name = st.text_input("Enter your name:", key=2)
-	#add buton here
-	#if button...
-	# st.write("something" + name)
-	#else...
-	#do something else
+	if st.button("Greetings"):
+		st.write("Hello " + name)
+	else:
+		st.write("Goodbye " + name)
 
-
-#exercise 3
+#exercise 4 - session state
 def using_session_state():
 	st.write("Normal Variable")
 	count = 0
@@ -95,7 +90,7 @@ def using_session_state():
 		st.session_state.count += 1
 	st.write("Session State Count = ", st.session_state.count)
 
-#exercise 4
+#exercise 5 - rule based question answering
 def rule_based_question_answering():
 	#create a rule based question answering system with the following questions and answers
 	question = st.text_input("Enter your question:")
@@ -106,27 +101,24 @@ def rule_based_question_answering():
 	else:
 		st.write("I am sorry, I am unable to help you with your query.")
 
-#challenge 4 modify the code below to create a rule based question answering system using session state and show the previous query
+#challenge 2 modify the code below to create a rule based question answering system using session state and show the previous query
 def rule_based_question_answering_challenge():
+	question = st.text_input("Enter your query:")
 	if "previous_query" not in st.session_state:
 		st.session_state.previous_query = ""
-	st.write("Previous query is " + st.session_state.previous_query)
-	question = st.text_input("Enter your query:")
-	#modify below to use session state
 	if question == "What is your name?":
-		#st.write...
-		#st.session_state.previous_query.....
-		pass
+		st.write("My name is EAI, an electronic artificial being.")
+		st.session_state.previous_query = question
 	elif question == "How old are you?":
-		#st.write...
-		#st.session_state.previous_query.....
-		pass
+		st.write("Today is my birthday!")
+		st.session_state.previous_query = question
+	elif question == "Show me the previous query":
+		st.write("Previous query is " + st.session_state.previous_query)
 	else:
-		#st.write...
-		#st.session_state.previous_query.....
-		pass
+		st.write("I am sorry, I am unable to help you with your query.")
+		st.session_state.previous_query = question
 
-#exercise 5
+#exercise 6 - simple data structure
 def simple_data_structure():
 	#this is a list
 	list = ["apple", "banana", "cherry"]
@@ -141,7 +133,7 @@ def simple_data_structure():
 	list_of_dict = [dict1, dict2, dict3]
 	st.write(list_of_dict)
 
-#exercise 6
+#exercise 7 - display dictionary in dataframe
 def display_dictionary_in_dataframe():
 	dict1 = {"name": "John", "age": 36}
 	dict2 = {"name": "Mary", "age": 25}
@@ -150,7 +142,7 @@ def display_dictionary_in_dataframe():
 	df = pd.DataFrame(list_of_dict)
 	st.write(df)
 
-#exercise 7
+#exercise 8 - for loop
 def loop_exercise():
 	#loop through a list
 	list = ["apple", "banana", "cherry"]
@@ -169,7 +161,7 @@ def loop_exercise():
 		st.write("name", x["name"])
 		st.write("age", x["age"])
 	
-#exercise 8
+#exercise 9 - streamlit form exercise
 def streamlit_form_exercise():
 	with st.form("new form"):
 		st.write("Inside the form")
@@ -189,7 +181,7 @@ def streamlit_form_exercise():
 		}
 		st.write(person)
 
-#challenge 9
+#challenge 3
 # Append the form data from a dictionary to a session state list and display the list of dictionaries
 def append_form_data_to_list():
 	if "list_of_dict" not in st.session_state:
@@ -211,24 +203,17 @@ def append_form_data_to_list():
 			"Age": age,
 			"Gender": gender
 		}
-		#append the person dictionary to the list_of_dict session state
-		
-		#display the list_of_dict session state using a for loop
-	
+		st.session_state.list_of_dict.append(person)
+	#display the list of dictionaries using a for loop
+	for x in st.session_state.list_of_dict:
+		st.write(x)
 
-
-
+#--------Streamlit app challenge - python recap and streamlit ---------------------------------------------------------------------------------------#	
 
 
 #Streamlit App challenge - python recap and streamlit
-#create your first streamlit app
-def streamlit_app():
-	st.write("My first Streamlit App")
-
-
-#Streamlit App challenge - example
 def streamlit_app_example():
-	st.title("Streamlit App Exercise Example")
+	st.title("Streamlit App Exercise")
 	# Initialize session state
 	if 'participants' not in st.session_state:
 		st.session_state['participants'] = []
@@ -275,6 +260,9 @@ def streamlit_app_example():
 
 
 
+#---------------------------------building chatbots ---------------------------------------------------------------------------------------#
+
+
 #Challenge 1 is to modify the code below to create a rule based bot and creating a dictionary data to store the prompts and replies
 def get_reply(prompt):
 	# Dictionary of prompts and replies
@@ -309,9 +297,9 @@ def rule_based_chatbot():
 		# Add user message to chat history
 		st.session_state.messages.append({"role": "user", "content": prompt})
 		
-		#modify the code below to create a rule based bot ( challenge 2), replace f"Echo: {prompt}" with get_reply(prompt)
-		response = f"Echo: {prompt}"
-		#response = get_reply(prompt)
+		#modify the code below to create a rule based bot ( challenge 2)
+		#response = f"Echo: {prompt}"
+		response = get_reply(prompt)
 
 		# Display assistant response in chat message container
 		with st.chat_message("assistant"):
@@ -351,21 +339,18 @@ def api_call_exercise():
 		#st.write(s)
 
 
-
-
 #challenge 2 is to create a function call_api to pass the prompt design and variables to call the OpenAI API 
 def call_api_challenge():
 	st.title("Api Call Challenge")
 	prompt_design = st.text_input("Enter your the prompt design for the API call:", value="You are a helpful assistant.")
 	prompt_query = st.text_input("Enter your prompt query:", value="Tell me about Singapore in the 1970s in 50 words.")
 	if st.button("Call the API"):
-		#modify the code below to create a function call_api to pass the prompt_design and prompt_query to call the OpenAI API
 		if prompt_design and prompt_query:
-			#call your api_call function here
-			st.write("Call the api_call function here")
+			api_call(prompt_design, prompt_query)
 		else:
 			st.warning("Please enter a prompt design and prompt query.")
-#challenge 2 this function below is called by the call_api_challenge function
+	
+
 def api_call(p_design, p_query):
 	openai.api_key = return_api_key()
 	os.environ["OPENAI_API_KEY"] = return_api_key()
@@ -392,7 +377,6 @@ def api_call(p_design, p_query):
 		st.write(f"Completion Tokens: {completion_tokens}")
 		st.write(f"Prompt Tokens: {prompt_tokens}")
 		st.write(f"Total Tokens: {total_tokens}")
-
 
 #Exercise 3 is to simplify the api call function and create the chat completion function
 def chat_completion(prompt_design, prompt):
@@ -429,9 +413,9 @@ def ai_chatbot():
 		# Add user message to chat history
 		st.session_state.messages.append({"role": "user", "content": prompt})
 		
-		#remove get_reply function and replace with chat_completion function and pass in two parameters
-		response = get_reply(prompt)
-		
+		#modify the code below to create an AI chatbot ( challenge 4)
+		#response = get_reply(prompt)
+		response = chat_completion("You are a helpful assistant", prompt)
 
 		# Display assistant response in chat message container
 		with st.chat_message("assistant"):
@@ -524,7 +508,7 @@ def basebot_prompt_design():
 				full_response = ""
 				# streaming function
 				#replace the prompt design "You are a helpful assistant" with the prompt design variable st.session_state.prompt_template
-				for response in chat_completion_stream("You are a helpful assistant", prompt):
+				for response in chat_completion_stream(st.session_state.prompt_template, prompt):
 					full_response += (response.choices[0].delta.content or "")
 					message_placeholder.markdown(full_response + "▌")
 				message_placeholder.markdown(full_response)
@@ -577,13 +561,13 @@ def basebot_prompt_design_memory():
 			with st.chat_message("assistant"):
 				message_placeholder = st.empty()
 				full_response = ""
-				# Add teh memory context after the st.session_state.prompt_template
-				for response in chat_completion_stream(st.session_state.prompt_template, prompt):
+				# streaming function
+				for response in chat_completion_stream(st.session_state.prompt_template + memory_context, prompt):
 					full_response += (response.choices[0].delta.content or "")
 					message_placeholder.markdown(full_response + "▌")
 				message_placeholder.markdown(full_response)
 				#modify the code below by calling save_context function found in exercise 6
-				#st.session_state.memory_variables ( save context to memory_variables) )
+				st.session_state.memory_variables.save_context({"input": prompt}, {"output": full_response})	
 			st.session_state.chat_msg.append(
 				{"role": "assistant", "content": full_response}
 			)
@@ -595,13 +579,12 @@ def basebot_prompt_design_memory():
 #Exercise 7 - Showing the capabilties of RAG
 def show_rag_results():
 	prompt = st.text_input("Enter your search query:")
-	if st.button("Search"):
-		if st.session_state.vs:
-			docs = st.session_state.vs.similarity_search(prompt)
-			resource = docs[0].page_content
-			source = docs[0].metadata
-			st.write("Resource", resource)
-			st.write("Source", source)
+	if st.session_state.vs:
+		docs = st.session_state.vs.similarity_search(prompt)
+		resource = docs[0].page_content
+		source = docs[0].metadata
+		st.write("Resource", resource)
+		st.write("Source", source)
 
 #Challenge 7 - Integrate RAG into the chatbot, add the RAG search results function to the chatbot where the prompt is the user input
 
@@ -616,8 +599,8 @@ def rag_results(prompt):
 		return "No results found"
 
 
-#Challenge 7 - Set the prompt design for the chatbot for the AI Chatbot
-#Hint Replace You are a helpful assistant with the prompt design variable
+#Challenge 7 - Integrate RAG into the chatbot, add the RAG search results function to the chatbot where the prompt is the user input
+#Hint add the RAG search results function with the memory variable
 def basebot_prompt_design_memory_rag():
 	# Initialize chat history
 	if "chat_msg" not in st.session_state:
@@ -644,8 +627,8 @@ def basebot_prompt_design_memory_rag():
 				full_response = ""
 				# Call rag_results and pass the prompt variable into the function
 				rag = rag_results(prompt)
-				# add the rag variable after the memory context
-				for response in chat_completion_stream(st.session_state.prompt_template + memory_context , prompt):
+				# streaming function
+				for response in chat_completion_stream(st.session_state.prompt_template + memory_context + rag, prompt):
 					full_response += (response.choices[0].delta.content or "")
 					message_placeholder.markdown(full_response + "▌")
 				message_placeholder.markdown(full_response)
@@ -723,7 +706,7 @@ def initialise():
 
 
 #Challenge 9 - Collect your data from your chatbot
-#Hint Replace You are a helpful assistant with the prompt design variable
+#How to capture and save the data from the chatbot into the database
 def basebot_prompt_design_memory_rag_data():
 	# Initialize chat history
 	if "chat_msg" not in st.session_state:
@@ -733,6 +716,11 @@ def basebot_prompt_design_memory_rag_data():
 	for message in st.session_state.chat_msg:
 		with st.chat_message(message["role"]):
 			st.markdown(message["content"])
+	
+	#include memory variables
+	memory = memory_variables()
+	memory_context = "\n\n Previous conversation" + memory
+
 	try:
 		#
 		if prompt := st.chat_input("What is up?"):
@@ -746,13 +734,13 @@ def basebot_prompt_design_memory_rag_data():
 				full_response = ""
 				rag = rag_results(prompt)
 				# streaming function
-				for response in chat_completion_stream(st.session_state.prompt_template + rag, prompt):
+				for response in chat_completion_stream(st.session_state.prompt_template + memory_context + rag, prompt):
 					full_response += (response.choices[0].delta.content or "")
 					message_placeholder.markdown(full_response + "▌")
 				message_placeholder.markdown(full_response)
 				st.session_state.memory_variables.save_context({"input": prompt}, {"output": full_response})
-				# modify and add the code below by calling collect function
-				#insert here hint collect()
+				# modify the code below by calling collect function
+				collect("My ID", full_response, prompt)
 			st.session_state.chat_msg.append(
 				{"role": "assistant", "content": full_response}
 			)
@@ -830,9 +818,13 @@ def document_search(query: str) -> str:
 @tool("Wiki search")
 def wiki_search(query: str) -> str:
 	"Use this function to search for documents in Wikipedia"
-	wikipedia = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper())
-	results = wikipedia.run(query)
-	return results
+
+	try:
+		wikipedia = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper())
+		results = wikipedia.run(query)
+		return str(results)
+	except Exception as e:
+		return f"Error occured, {str(e)}"
 
 def agent_bot_with_more_tools():
 	st.title("Smart Agent with Tools - 2 or more Tools")
@@ -870,7 +862,7 @@ def agent_bot_with_more_tools():
 			model_name=st.secrets["default_model"], openai_api_key=return_api_key(), streaming=True
 		)
 		#Modify the code below to add more tools to the smart agent
-		tools = tools = [DuckDuckGoSearchRun(name="Internet Search")]
+		tools = [wiki_search, document_search, DuckDuckGoSearchRun(name="Internet Search")]
 		
 		chat_agent = ConversationalChatAgent.from_llm_and_tools(llm=llm, tools=tools)
 		executor = AgentExecutor.from_agent_and_tools(
